@@ -65,5 +65,5 @@ Release/
 *.Thumbs.db
 
 # Project specific
-./main
+main
 sample.bmp

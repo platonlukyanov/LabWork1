@@ -1,43 +1,82 @@
 #include <iostream>
 #include <fstream>
-#include "bmpHeader.h";
+#include "bmpHeader.h"
 
-void readBmp(const char* filename) {
-   std::ifstream file(filename, std::ios::binary); 
-   BITMAPFILEHEADER bmFileHeader;
-   BITMAPINFOHEADER bmInfoHeader;
+class BMPFile {
+    public:
+        BMPFile(const char* filename) : _filename(filename) {
+            load();
+        }
+        ~BMPFile() {
+            delete[] pixels;
+        }
+        int getWidth() {
+            return _infoHeader.biWidth;
+        }
+        int getHeight() {
+            return _infoHeader.biHeight;
+        }
+        void write(const char* newFilename) {
+            std::ofstream file(newFilename, std::ios::binary);
+ 
+            int height = getHeight();
+            int width = getWidth();
 
-   if (!file) {
-    std::cerr << "Unable to open file!" << std::endl;
-    return;
-   }
+            BITMAPFILEHEADER fileHeader = _fileHeader;
+            BITMAPINFOHEADER infoHeader = _infoHeader;
+            
+            if (!file) {
+                std::cerr << "Unable to open file!" << std::endl;
+                return;
+            }
+            file.write(reinterpret_cast<const char*>(&fileHeader), sizeof(fileHeader));
+            file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
+            file.write(reinterpret_cast<const char*>(pixels), getImageSize());
+            file.close();
+        }
+    private:
+        uint8_t* pixels;
+        const char* _filename;
+        BITMAPFILEHEADER _fileHeader;
+        BITMAPINFOHEADER _infoHeader;
+        static const uint16_t bmInLittleEndian = 0x4D42;
+ 
+        void load() {
+            std::ifstream file(_filename, std::ios::binary); 
 
-   file.read(reinterpret_cast<char*>(&bmFileHeader), sizeof(bmFileHeader));
-   file.read(reinterpret_cast<char*>(&bmInfoHeader), sizeof(bmInfoHeader));
+            if (!file) {
+                std::cerr << "Unable to open file!" << std::endl;
+                return;
+            }
 
-   const uint16_t bmInLittleEndian = 0x4D42;
-   if (bmFileHeader.bfType != bmInLittleEndian) {
-    std::cerr << "Not a BMP file!" << std::endl;
-    return;
-   }
+            file.read(reinterpret_cast<char*>(&_fileHeader), sizeof(_fileHeader));
+            file.read(reinterpret_cast<char*>(&_infoHeader), sizeof(_infoHeader));
 
-//    std::cout << "Width: " << bmInfoHeader.biWidth 
-//    << ", Height: " << bmInfoHeader.biHeight << ", Bit Count: "
-//    << bmInfoHeader.biBitPerPixel;
-    size_t imageSize = bmInfoHeader.biImageDataSize;
-    if (imageSize == 0) {
-        imageSize = bmInfoHeader.biWidth * bmInfoHeader.biHeight * (bmInfoHeader.biNumberOfColorPlanes / 8);
-    }
-    std::cout << "Size: " << imageSize;
+            if (_fileHeader.bfType != bmInLittleEndian) {
+                std::cerr << "Not a BMP file!" << std::endl;
+                return;
+            }
+            int width = getWidth();
+            int height = getHeight();
+            int imageSize = getImageSize();
+            pixels = new uint8_t[imageSize];
 
-    auto rawPixels = new uint8_t[imageSize];
+            file.read(reinterpret_cast<char*>(pixels), imageSize);
+            file.close();
+        }
 
-    file.seekg(bmFileHeader.bfOffsetBits);
-    file.read(reinterpret_cast<char*>(rawPixels), imageSize);
-    delete[] rawPixels;
-}
+        int getImageSize() {
+            size_t imageSize = _infoHeader.biImageDataSize;
+            if (imageSize == 0) {
+                imageSize = _infoHeader.biWidth * _infoHeader.biHeight * (_infoHeader.biBitPerPixel / 8);
+            }
+            return imageSize;
+        }
+};
 
 int main() {
     std::cout << "Hello, world!\n";
-    readBmp("sample.bmp");
+    BMPFile bmpFile("sample.bmp");
+    std::cout << bmpFile.getWidth() << " and " << bmpFile.getHeight();
+    bmpFile.write("sample2.bmp");
 }
