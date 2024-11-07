@@ -1,9 +1,9 @@
 IDIR=.
 CXX=g++
 CXXFLAGS=-I$(IDIR)
-OBJECT_FILES=main.o 
+OBJECT_FILES=main.o BMPPixelMatrix.o BMPFile.o
 PROJECT=main
-DEPS=
+DEPS=Pixel.h BMPPixelMatrix.h BMPFile.h
 all: $(PROJECT);
 default: all;
 

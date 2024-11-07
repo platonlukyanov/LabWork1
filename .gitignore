@@ -66,4 +66,4 @@ Release/
 
 # Project specific
 main
-sample.bmp
+*.bmp
