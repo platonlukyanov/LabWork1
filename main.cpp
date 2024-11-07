@@ -1,13 +1,15 @@
 #include <fstream>
 #include <iostream>
 
+#include "BMPFile.h"
 #include "BMPPixelMatrix.h"
 #include "bmpHeader.h"
-#include "BMPFile.h"
 
 int main(int argc, char *argv[]) {
     if (argc == 1) {
-        std::cout << "Please, specify action (available 'rotate-clockwise', 'rotate-anticlockwise') and after that source and target files: ./main <action> <source> <target>\n";
+        std::cout << "Please, specify action (available 'rotate-clockwise', "
+                     "'rotate-anticlockwise') and after that source and target "
+                     "files: ./main <action> <source> <target>\n";
         return 1;
     }
     std::string action = argv[1];

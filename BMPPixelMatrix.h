@@ -17,6 +17,7 @@ class BMPPixelMatrix {
         int getWidth();
         int getHeight();
         void applyGaussianBlur();
+
     private:
         int _width;
         int _height;

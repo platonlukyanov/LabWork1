@@ -19,7 +19,7 @@ int BMPFile::getHeight() {
 
 void BMPFile::write(const std::string* newFilename) {
     std::ofstream file(newFilename->c_str(), std::ios::binary);
-    
+
     if (!file) {
         std::cerr << "Unable to open file!" << std::endl;
         return;
@@ -38,9 +38,9 @@ void BMPFile::write(const std::string* newFilename) {
 
     file.write(reinterpret_cast<const char*>(&fileHeader), sizeof(fileHeader));
     file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
-    
+
     file.write(reinterpret_cast<const char*>(pixelsForWriting), getImageSize());
-    
+
     file.close();
 }
 
@@ -49,7 +49,7 @@ void BMPFile::rotate90Degrees() {
         std::cerr << "Can't rotate inexistent matrix\n";
         return;
     }
-    
+
     pixelsMatrix->rotate90Degrees();
 }
 
@@ -58,7 +58,7 @@ void BMPFile::rotateNegative90Degrees() {
         std::cerr << "Can't rotate inexistent matrix\n";
         return;
     }
-    
+
     pixelsMatrix->rotateNegative90Degrees();
 }
 
@@ -79,7 +79,7 @@ void BMPFile::load() {
     }
 
     file.read(reinterpret_cast<char*>(&_fileHeader), sizeof(_fileHeader));
-    
+
     if (_fileHeader.bfType != bmInLittleEndian) {
         std::cerr << "Not a BMP file!" << std::endl;
         return;
@@ -87,20 +87,22 @@ void BMPFile::load() {
 
     file.read(reinterpret_cast<char*>(&_infoHeader), sizeof(_infoHeader));
 
-   int width = getWidth();
-   int height = getHeight();
-   int paddedRowSize = (width * (_infoHeader.biBitPerPixel / 8) + 3) & ~3;
+    int width = getWidth();
+    int height = getHeight();
+    int paddedRowSize = (width * (_infoHeader.biBitPerPixel / 8) + 3) & ~3;
 
-   pixels = new uint8_t[paddedRowSize * height];
+    pixels = new uint8_t[paddedRowSize * height];
 
-   for (int i = 0; i < height; ++i) {
-       file.read(reinterpret_cast<char*>(pixels + i * paddedRowSize), paddedRowSize);
-   }
+    for (int i = 0; i < height; ++i) {
+        file.read(reinterpret_cast<char*>(pixels + i * paddedRowSize),
+                  paddedRowSize);
+    }
 
-   pixelsMatrix = new BMPPixelMatrix(getWidth(), getHeight(), _infoHeader.biBitPerPixel);
-   pixelsMatrix->loadPixelMatrix(pixels);
+    pixelsMatrix =
+        new BMPPixelMatrix(getWidth(), getHeight(), _infoHeader.biBitPerPixel);
+    pixelsMatrix->loadPixelMatrix(pixels);
 
-   file.close();
+    file.close();
 }
 
 void BMPFile::applyGaussianBlur() {
@@ -108,6 +110,7 @@ void BMPFile::applyGaussianBlur() {
 }
 
 int BMPFile::getImageSize() {
-   int paddedRowSize = (_infoHeader.biWidth * (_infoHeader.biBitPerPixel / 8) + 3) & ~3;
-   return paddedRowSize * _infoHeader.biHeight;
+    int paddedRowSize =
+        (_infoHeader.biWidth * (_infoHeader.biBitPerPixel / 8) + 3) & ~3;
+    return paddedRowSize * _infoHeader.biHeight;
 }

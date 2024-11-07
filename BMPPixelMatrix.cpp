@@ -1,4 +1,5 @@
 #include "BMPPixelMatrix.h"
+
 #include <algorithm>
 #include <cstring>
 #include <utility>
@@ -111,13 +112,11 @@ void BMPPixelMatrix::rotate90Degrees() {
 void BMPPixelMatrix::applyGaussianBlur() {
     const int kernelSize = 5;
     const float sigma = 1.0f;
-    const float kernel[kernelSize][kernelSize] = {
-        {1,  4,  6,  4,  1},
-        {4, 16, 24, 16,  4},
-        {6, 24, 36, 24,  6},
-        {4, 16, 24, 16,  4},
-        {1,  4,  6,  4,  1}
-    };
+    const float kernel[kernelSize][kernelSize] = {{1, 4, 6, 4, 1},
+                                                  {4, 16, 24, 16, 4},
+                                                  {6, 24, 36, 24, 6},
+                                                  {4, 16, 24, 16, 4},
+                                                  {1, 4, 6, 4, 1}};
 
     float kernelSum = 0.0f;
     for (int i = 0; i < kernelSize; ++i) {
@@ -138,15 +137,24 @@ void BMPPixelMatrix::applyGaussianBlur() {
                 for (int kx = -kernelSize / 2; kx <= kernelSize / 2; ++kx) {
                     int pixelY = std::clamp(y + ky, 0, _height - 1);
                     int pixelX = std::clamp(x + kx, 0, _width - 1);
-                    blue += matrix[pixelY][pixelX].blue * (kernel[ky + kernelSize / 2][kx + kernelSize / 2] / kernelSum);
-                    green += matrix[pixelY][pixelX].green * (kernel[ky + kernelSize / 2][kx + kernelSize / 2] / kernelSum);
-                    red += matrix[pixelY][pixelX].red * (kernel[ky + kernelSize / 2][kx + kernelSize / 2] / kernelSum);
+                    blue += matrix[pixelY][pixelX].blue *
+                            (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                             kernelSum);
+                    green += matrix[pixelY][pixelX].green *
+                             (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                              kernelSum);
+                    red += matrix[pixelY][pixelX].red *
+                           (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                            kernelSum);
                 }
             }
 
-            blurredMatrix[y][x].blue = static_cast<uint8_t>(std::clamp(blue, 0.0f, 255.0f));
-            blurredMatrix[y][x].green = static_cast<uint8_t>(std::clamp(green, 0.0f, 255.0f));
-            blurredMatrix[y][x].red = static_cast<uint8_t>(std::clamp(red, 0.0f, 255.0f));
+            blurredMatrix[y][x].blue =
+                static_cast<uint8_t>(std::clamp(blue, 0.0f, 255.0f));
+            blurredMatrix[y][x].green =
+                static_cast<uint8_t>(std::clamp(green, 0.0f, 255.0f));
+            blurredMatrix[y][x].red =
+                static_cast<uint8_t>(std::clamp(red, 0.0f, 255.0f));
         }
     }
 
