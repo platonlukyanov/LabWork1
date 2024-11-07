@@ -1,3 +1,7 @@
+/* Platon Lukyanov st128133@student.spbu.ru
+ * Lab Work 1
+*/
+
 #ifndef BMPPIXELMATRIX_H
 #define BMPPIXELMATRIX_H
 

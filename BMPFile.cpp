@@ -1,3 +1,7 @@
+/* Platon Lukyanov st128133@student.spbu.ru
+ * Lab Work 1
+*/
+
 #include "BMPFile.h"
 
 BMPFile::BMPFile(const std::string* filename) : _filename(filename) {

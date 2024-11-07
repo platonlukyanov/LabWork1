@@ -1,3 +1,7 @@
+/* Platon Lukyanov st128133@student.spbu.ru
+ * Lab Work 1
+*/
+
 #ifndef BMPFILE_H
 #define BMPFILE_H
 
