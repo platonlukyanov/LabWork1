@@ -67,3 +67,4 @@ Release/
 # Project specific
 main
 *.bmp
+performance_report.md
