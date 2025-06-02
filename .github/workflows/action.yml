@@ -2,7 +2,7 @@ name: "Build & Test"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main, docs-ci" ]
   pull_request:
     branches: [ "main" ]
 
