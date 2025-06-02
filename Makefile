@@ -16,4 +16,7 @@ format:
 	find . \( -name '*.cpp' -o -name '*.h' \) -exec clang-format -i {} \;
 clean:
 	rm -f $(PROJECT) *.o
+
+gen-doc:
+	doxygen Doxyfile
 .PHONY: clean $(PROJECT)

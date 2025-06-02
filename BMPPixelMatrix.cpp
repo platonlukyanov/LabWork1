@@ -12,11 +12,21 @@
 
 const int NUMBER_OF_THREADS = 4;
 
+/**
+ * @brief Constructor of BMPPixelMatrix class
+ * @param width Width of the pixel matrix
+ * @param height Height of the pixel matrix
+ * @param bytesPerPixel Number of bytes per pixel
+ */
 BMPPixelMatrix::BMPPixelMatrix(int width, int height, int bytesPerPixel)
     : _width(width), _height(height), _bytesPerPixel(bytesPerPixel) {
     matrix = _getEmptyMatrix(width, height);
 }
 
+/**
+ * @brief Destructor of BMPPixelMatrix class
+ * Frees memory allocated for the pixel matrix
+ */
 BMPPixelMatrix::~BMPPixelMatrix() {
     for (int i = 0; i < _height; ++i) {
         delete[] matrix[i];
@@ -24,18 +34,35 @@ BMPPixelMatrix::~BMPPixelMatrix() {
     delete[] matrix;
 }
 
+/**
+ * @brief Get the width of the pixel matrix
+ * @return Width of the matrix in pixels
+ */
 int BMPPixelMatrix::getWidth() {
     return _width;
 }
 
+/**
+ * @brief Get the height of the pixel matrix
+ * @return Height of the matrix in pixels
+ */
 int BMPPixelMatrix::getHeight() {
     return _height;
 }
 
+/**
+ * @brief Load pixel matrix from raw data
+ * @param rawPixels Pointer to the array of raw pixel data
+ */
 void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels) {
     loadPixelMatrix(rawPixels, _bytesPerPixel);
 }
 
+/**
+ * @brief Load pixel matrix from raw data with specified bits per pixel
+ * @param rawPixels Pointer to the array of raw pixel data
+ * @param bitPerPixel Number of bits per pixel
+ */
 void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels, int bitPerPixel) {
     int bytesPerPixel = (bitPerPixel / 8);
     int rowSize = ((bytesPerPixel * _width + 3) &
@@ -65,6 +92,10 @@ void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels, int bitPerPixel) {
     }
 }
 
+/**
+ * @brief Convert pixel matrix to raw data
+ * @return Pointer to the array of raw pixel data
+ */
 uint8_t* BMPPixelMatrix::convertMatrixToRawPixels() {
     int bytesPerPixel = (_bytesPerPixel / 8);
     int rowSize = ((bytesPerPixel * _width + 3) &
@@ -105,6 +136,10 @@ void BMPPixelMatrix::_clearMatrix() {
     delete[] matrix;
 }
 
+/**
+ * @brief Rotate image by -90 degrees
+ * Implemented using multi-threading
+ */
 void BMPPixelMatrix::rotateNegative90Degrees() {
     Pixel** rotatedMatrix = _getEmptyMatrix(_height, _width);
 
@@ -133,6 +168,10 @@ void BMPPixelMatrix::rotateNegative90Degrees() {
     matrix = rotatedMatrix;
 }
 
+/**
+ * @brief Rotate image by 90 degrees
+ * Implemented using multi-threading
+ */
 void BMPPixelMatrix::rotate90Degrees() {
     Pixel** rotatedMatrix = _getEmptyMatrix(_height, _width);
 
@@ -161,6 +200,10 @@ void BMPPixelMatrix::rotate90Degrees() {
     matrix = rotatedMatrix;
 }
 
+/**
+ * @brief Apply Gaussian blur to the image
+ * Uses 5x5 kernel and multi-threaded processing
+ */
 void BMPPixelMatrix::applyGaussianBlur() {
     const int kernelSize = 5;
     const float sigma = 1.0f;

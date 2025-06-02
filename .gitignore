@@ -67,3 +67,5 @@ Release/
 # Project specific
 main
 *.bmp
+latex
+html
