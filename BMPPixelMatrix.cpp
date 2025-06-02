@@ -137,21 +137,16 @@ void BMPPixelMatrix::rotate90Degrees() {
     Pixel** rotatedMatrix = _getEmptyMatrix(_height, _width);
 
     std::vector<std::thread> threads;
-    int rowsPerThread = _height / NUMBER_OF_THREADS; 
+    int rowsPerThread = _height / NUMBER_OF_THREADS;
 
     for (int t = 0; t < NUMBER_OF_THREADS; ++t) {
         int startRow = t * rowsPerThread;
         int endRow = (t == NUMBER_OF_THREADS - 1) ? _height : startRow + rowsPerThread;
 
         threads.emplace_back([this, rotatedMatrix, startRow, endRow]() {
-            for (int y = 0; y < _height; ++y) {
+            for (int y = startRow; y < endRow; ++y) {
                 for (int x = 0; x < _width; ++x) {
-                    int newY = x;
-                    int newX = _height - 1 - y;
-
-                    if (newY >= startRow && newY < endRow) {
-                        rotatedMatrix[newY][newX] = matrix[y][x];
-                    }
+                    rotatedMatrix[x][_height - 1 - y] = matrix[y][x];
                 }
             }
         });

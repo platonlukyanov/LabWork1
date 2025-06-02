@@ -84,6 +84,6 @@ test_operation() {
 }
 
 # Test all operations
-# test_operation "rotate-clockwise"
+test_operation "rotate-clockwise"
 test_operation "rotate-anticlockwise"
-# test_operation "gauss"
+test_operation "gauss"
