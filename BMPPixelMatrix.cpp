@@ -270,3 +270,11 @@ void BMPPixelMatrix::applyGaussianBlur() {
     _clearMatrix();
     matrix = blurredMatrix;
 }
+
+Pixel& BMPPixelMatrix::getPixel(int x, int y) {
+    return matrix[x][y];
+}
+
+void BMPPixelMatrix::setPixel(int x, int y, Pixel& pixel) {
+    matrix[x][y] = pixel;
+}

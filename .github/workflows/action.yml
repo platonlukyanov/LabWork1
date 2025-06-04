@@ -1,4 +1,4 @@
-name: "Build & Test"
+name: "Build"
 
 on:
   push:
@@ -26,3 +26,23 @@ jobs:
       - name: Build
         run: |
           make
+  testing:
+    name: Test 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Installing make & other tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential
+
+      - name: Fetching source code
+        uses: actions/checkout@v4
+      
+      - name: Setup GoogleTest
+        uses: Bacondish2023/setup-googletest@v1
+        with:
+          tag: v1.14.0
+      - name: Test
+        run: |
+          make test
