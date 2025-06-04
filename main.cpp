@@ -1,6 +1,6 @@
 /* Platon Lukyanov st128133@student.spbu.ru
  * Lab Work 1
-*/
+ */
 
 #include <fstream>
 #include <iostream>

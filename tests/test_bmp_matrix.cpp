@@ -1,27 +1,29 @@
+/* Platon Lukyanov st128133@student.spbu.ru
+ * Lab Work 1
+ */
 #include <gtest/gtest.h>
+
 #include "BMPPixelMatrix.h"
 
 class BMPPixelMatrixTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        matrix = new BMPPixelMatrix(3, 3, 24);
-        
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                Pixel pixel;
-                pixel.red = x * 50;
-                pixel.green = y * 50;
-                pixel.blue = (x + y) * 25;
-                matrix->setPixel(x, y, pixel);
+    protected:
+        void SetUp() override {
+            matrix = new BMPPixelMatrix(3, 3, 24);
+
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 3; x++) {
+                    Pixel pixel;
+                    pixel.red = x * 50;
+                    pixel.green = y * 50;
+                    pixel.blue = (x + y) * 25;
+                    matrix->setPixel(x, y, pixel);
+                }
             }
         }
-    }
 
-    void TearDown() override {
-        delete matrix;
-    }
+        void TearDown() override { delete matrix; }
 
-    BMPPixelMatrix* matrix;
+        BMPPixelMatrix* matrix;
 };
 
 TEST_F(BMPPixelMatrixTest, MatrixDimensions) {
@@ -32,8 +34,7 @@ TEST_F(BMPPixelMatrixTest, MatrixDimensions) {
 TEST_F(BMPPixelMatrixTest, Rotate90Degrees) {
     Pixel original[3][3];
     for (int y = 0; y < 3; y++)
-        for (int x = 0; x < 3; x++)
-            original[y][x] = matrix->getPixel(x, y);
+        for (int x = 0; x < 3; x++) original[y][x] = matrix->getPixel(x, y);
 
     matrix->rotate90Degrees();
 
@@ -53,8 +54,7 @@ TEST_F(BMPPixelMatrixTest, Rotate90Degrees) {
 TEST_F(BMPPixelMatrixTest, RotateNegative90Degrees) {
     Pixel original[3][3];
     for (int y = 0; y < 3; y++)
-        for (int x = 0; x < 3; x++)
-            original[y][x] = matrix->getPixel(x, y);
+        for (int x = 0; x < 3; x++) original[y][x] = matrix->getPixel(x, y);
 
     matrix->rotateNegative90Degrees();
 
@@ -117,4 +117,4 @@ TEST_F(BMPPixelMatrixTest, GaussianBlur) {
             EXPECT_LE(pixel.blue, 255);
         }
     }
-} 
+}
