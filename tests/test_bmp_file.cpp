@@ -25,7 +25,6 @@ class BMPFileTest : public ::testing::Test {
         void createTestBMPFile(const std::string& filename) {
             std::ofstream file(filename, std::ios::binary);
 
-            // Создаем заголовок файла
             BITMAPFILEHEADER fileHeader;
             fileHeader.bfType = 0x4D42;  // 'BM'
             fileHeader.bfSize = 54 + 3 * 3 * 3;
