@@ -1,0 +1,57 @@
+/**
+ * @mainpage BMP Image Processing
+ * 
+ * @section intro_sec Introduction
+ * This library provides functionality for working with BMP images,
+ * including loading, saving, and various image processing operations.
+ * 
+ * @section features_sec Main Features
+ * - Loading and saving BMP files
+ * - Image rotation by 90 and -90 degrees
+ * - Gaussian blur application
+ * - Multi-threaded image processing
+ * 
+ * @section classes_sec Main Classes
+ * - BMPFile - class for working with BMP files
+ * - BMPPixelMatrix - class for working with pixel matrix
+ * 
+ * @section usage_sec Usage
+ * Example of library usage:
+ * @code
+ * BMPFile image("input.bmp");
+ * image.rotate90Degrees();
+ * image.applyGaussianBlur();
+ * image.write("output.bmp");
+ * @endcode
+ * 
+ * @section build_sec Building
+ * Requirements:
+ * - g++
+ * - make
+ * - clang-format (for development environment)
+ * 
+ * To build the project, run:
+ * @code
+ * make
+ * @endcode
+ * 
+ * @section run_sec Running
+ * The program supports three operations:
+ * 1. Clockwise rotation (`rotate-clockwise`)
+ * 2. Counter-clockwise rotation (`rotate-anticlockwise`)
+ * 3. Gaussian filter (`gauss`)
+ * 
+ * Command format:
+ * @code
+ * ./main <operation> <source_bmp_file> <target_bmp_file>
+ * @endcode
+ * 
+ * @section format_sec Code Formatting
+ * To format the code, run:
+ * @code
+ * make format
+ * @endcode
+ * 
+ * @author Platon Lukyanov (platon_lukyanov@vk.com)
+ * @version 1.0
+ */ 

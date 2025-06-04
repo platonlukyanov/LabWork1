@@ -1,22 +1,32 @@
 /* Platon Lukyanov st128133@student.spbu.ru
  * Lab Work 1
-*/
+ */
 
-#include "BMPPixelMatrix.h"
+#include "include/BMPPixelMatrix.h"
 
 #include <algorithm>
 #include <cstring>
-#include <utility>
 #include <thread>
+#include <utility>
 #include <vector>
 
 const int NUMBER_OF_THREADS = 4;
 
+/**
+ * @brief Constructor of BMPPixelMatrix class
+ * @param width Width of the pixel matrix
+ * @param height Height of the pixel matrix
+ * @param bytesPerPixel Number of bytes per pixel
+ */
 BMPPixelMatrix::BMPPixelMatrix(int width, int height, int bytesPerPixel)
     : _width(width), _height(height), _bytesPerPixel(bytesPerPixel) {
     matrix = _getEmptyMatrix(width, height);
 }
 
+/**
+ * @brief Destructor of BMPPixelMatrix class
+ * Frees memory allocated for the pixel matrix
+ */
 BMPPixelMatrix::~BMPPixelMatrix() {
     for (int i = 0; i < _height; ++i) {
         delete[] matrix[i];
@@ -24,18 +34,35 @@ BMPPixelMatrix::~BMPPixelMatrix() {
     delete[] matrix;
 }
 
+/**
+ * @brief Get the width of the pixel matrix
+ * @return Width of the matrix in pixels
+ */
 int BMPPixelMatrix::getWidth() {
     return _width;
 }
 
+/**
+ * @brief Get the height of the pixel matrix
+ * @return Height of the matrix in pixels
+ */
 int BMPPixelMatrix::getHeight() {
     return _height;
 }
 
+/**
+ * @brief Load pixel matrix from raw data
+ * @param rawPixels Pointer to the array of raw pixel data
+ */
 void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels) {
     loadPixelMatrix(rawPixels, _bytesPerPixel);
 }
 
+/**
+ * @brief Load pixel matrix from raw data with specified bits per pixel
+ * @param rawPixels Pointer to the array of raw pixel data
+ * @param bitPerPixel Number of bits per pixel
+ */
 void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels, int bitPerPixel) {
     int bytesPerPixel = (bitPerPixel / 8);
     int rowSize = ((bytesPerPixel * _width + 3) &
@@ -46,18 +73,21 @@ void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels, int bitPerPixel) {
 
     for (int t = 0; t < NUMBER_OF_THREADS; ++t) {
         int startY = t * rowsPerThread;
-        int endY = (t == NUMBER_OF_THREADS - 1) ? _height : startY + rowsPerThread;
+        int endY =
+            (t == NUMBER_OF_THREADS - 1) ? _height : startY + rowsPerThread;
 
-        threads.emplace_back([this, rawPixels, bytesPerPixel, rowSize, startY, endY]() {
-            for (int y = startY; y < endY; ++y) {
-                for (int x = 0; x < _width; ++x) {
-                    int index = ((_height - 1 - y) * rowSize + x * bytesPerPixel);
-                    matrix[y][x].blue = rawPixels[index];
-                    matrix[y][x].green = rawPixels[index + 1];
-                    matrix[y][x].red = rawPixels[index + 2];
+        threads.emplace_back(
+            [this, rawPixels, bytesPerPixel, rowSize, startY, endY]() {
+                for (int y = startY; y < endY; ++y) {
+                    for (int x = 0; x < _width; ++x) {
+                        int index =
+                            ((_height - 1 - y) * rowSize + x * bytesPerPixel);
+                        matrix[y][x].blue = rawPixels[index];
+                        matrix[y][x].green = rawPixels[index + 1];
+                        matrix[y][x].red = rawPixels[index + 2];
+                    }
                 }
-            }
-        });
+            });
     }
 
     for (std::thread& t : threads) {
@@ -65,6 +95,10 @@ void BMPPixelMatrix::loadPixelMatrix(uint8_t* rawPixels, int bitPerPixel) {
     }
 }
 
+/**
+ * @brief Convert pixel matrix to raw data
+ * @return Pointer to the array of raw pixel data
+ */
 uint8_t* BMPPixelMatrix::convertMatrixToRawPixels() {
     int bytesPerPixel = (_bytesPerPixel / 8);
     int rowSize = ((bytesPerPixel * _width + 3) &
@@ -105,6 +139,10 @@ void BMPPixelMatrix::_clearMatrix() {
     delete[] matrix;
 }
 
+/**
+ * @brief Rotate image by -90 degrees
+ * Implemented using multi-threading
+ */
 void BMPPixelMatrix::rotateNegative90Degrees() {
     Pixel** rotatedMatrix = _getEmptyMatrix(_height, _width);
 
@@ -113,7 +151,8 @@ void BMPPixelMatrix::rotateNegative90Degrees() {
 
     for (int t = 0; t < NUMBER_OF_THREADS; ++t) {
         int startRow = t * rowsPerThread;
-        int endRow = (t == NUMBER_OF_THREADS - 1) ? _height : startRow + rowsPerThread;
+        int endRow =
+            (t == NUMBER_OF_THREADS - 1) ? _height : startRow + rowsPerThread;
 
         threads.emplace_back([this, rotatedMatrix, startRow, endRow]() {
             for (int y = startRow; y < endRow; ++y) {
@@ -133,6 +172,10 @@ void BMPPixelMatrix::rotateNegative90Degrees() {
     matrix = rotatedMatrix;
 }
 
+/**
+ * @brief Rotate image by 90 degrees
+ * Implemented using multi-threading
+ */
 void BMPPixelMatrix::rotate90Degrees() {
     Pixel** rotatedMatrix = _getEmptyMatrix(_height, _width);
 
@@ -141,7 +184,8 @@ void BMPPixelMatrix::rotate90Degrees() {
 
     for (int t = 0; t < NUMBER_OF_THREADS; ++t) {
         int startRow = t * rowsPerThread;
-        int endRow = (t == NUMBER_OF_THREADS - 1) ? _height : startRow + rowsPerThread;
+        int endRow =
+            (t == NUMBER_OF_THREADS - 1) ? _height : startRow + rowsPerThread;
 
         threads.emplace_back([this, rotatedMatrix, startRow, endRow]() {
             for (int y = startRow; y < endRow; ++y) {
@@ -161,6 +205,10 @@ void BMPPixelMatrix::rotate90Degrees() {
     matrix = rotatedMatrix;
 }
 
+/**
+ * @brief Apply Gaussian blur to the image
+ * Uses 5x5 kernel and multi-threaded processing
+ */
 void BMPPixelMatrix::applyGaussianBlur() {
     const int kernelSize = 5;
     const float sigma = 1.0f;
@@ -184,9 +232,11 @@ void BMPPixelMatrix::applyGaussianBlur() {
 
     for (int t = 0; t < NUMBER_OF_THREADS; ++t) {
         int startY = t * rowsPerThread;
-        int endY = (t == NUMBER_OF_THREADS - 1) ? _height : startY + rowsPerThread;
+        int endY =
+            (t == NUMBER_OF_THREADS - 1) ? _height : startY + rowsPerThread;
 
-        threads.emplace_back([this, blurredMatrix, kernel, kernelSum, kernelSize, startY, endY]() {
+        threads.emplace_back([this, blurredMatrix, kernel, kernelSum,
+                              kernelSize, startY, endY]() {
             for (int y = startY; y < endY; ++y) {
                 for (int x = 0; x < _width; ++x) {
                     float blue = 0.0f;
@@ -194,17 +244,21 @@ void BMPPixelMatrix::applyGaussianBlur() {
                     float red = 0.0f;
 
                     for (int ky = -kernelSize / 2; ky <= kernelSize / 2; ++ky) {
-                        for (int kx = -kernelSize / 2; kx <= kernelSize / 2; ++kx) {
+                        for (int kx = -kernelSize / 2; kx <= kernelSize / 2;
+                             ++kx) {
                             int pixelY = std::clamp(y + ky, 0, _height - 1);
                             int pixelX = std::clamp(x + kx, 0, _width - 1);
                             blue += matrix[pixelY][pixelX].blue *
-                                    (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                                    (kernel[ky + kernelSize / 2]
+                                           [kx + kernelSize / 2] /
                                      kernelSum);
                             green += matrix[pixelY][pixelX].green *
-                                     (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                                     (kernel[ky + kernelSize / 2]
+                                            [kx + kernelSize / 2] /
                                       kernelSum);
                             red += matrix[pixelY][pixelX].red *
-                                   (kernel[ky + kernelSize / 2][kx + kernelSize / 2] /
+                                   (kernel[ky + kernelSize / 2]
+                                          [kx + kernelSize / 2] /
                                     kernelSum);
                         }
                     }
@@ -226,4 +280,12 @@ void BMPPixelMatrix::applyGaussianBlur() {
 
     _clearMatrix();
     matrix = blurredMatrix;
+}
+
+Pixel& BMPPixelMatrix::getPixel(int x, int y) {
+    return matrix[x][y];
+}
+
+void BMPPixelMatrix::setPixel(int x, int y, Pixel& pixel) {
+    matrix[x][y] = pixel;
 }

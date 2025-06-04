@@ -19,3 +19,8 @@ email: platon_lukyanov@vk.com
 ```bash
 make format
 ```
+
+## Генерация документации
+```bash
+make gen-doc
+```
