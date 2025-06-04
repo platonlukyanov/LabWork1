@@ -2,7 +2,7 @@
  * Lab Work 1
  */
 
-#include "BMPFile.h"
+#include "include/BMPFile.h"
 
 /**
  * @brief Constructor of BMPFile class

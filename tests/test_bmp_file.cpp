@@ -5,7 +5,7 @@
 
 #include <fstream>
 
-#include "BMPFile.h"
+#include "include/BMPFile.h"
 
 class BMPFileTest : public ::testing::Test {
     protected:

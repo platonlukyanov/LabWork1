@@ -3,7 +3,7 @@
  */
 #include <gtest/gtest.h>
 
-#include "BMPPixelMatrix.h"
+#include "include/BMPPixelMatrix.h"
 
 class BMPPixelMatrixTest : public ::testing::Test {
     protected:

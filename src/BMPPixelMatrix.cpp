@@ -2,7 +2,7 @@
  * Lab Work 1
  */
 
-#include "BMPPixelMatrix.h"
+#include "include/BMPPixelMatrix.h"
 
 #include <algorithm>
 #include <cstring>

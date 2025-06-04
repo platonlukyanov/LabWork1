@@ -5,9 +5,9 @@
 #include <fstream>
 #include <iostream>
 
-#include "BMPFile.h"
-#include "BMPPixelMatrix.h"
-#include "bmpHeader.h"
+#include "include/BMPFile.h"
+#include "include/BMPPixelMatrix.h"
+#include "include/bmpHeader.h"
 
 int main(int argc, char *argv[]) {
     if (argc == 1) {
